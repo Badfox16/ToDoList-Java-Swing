@@ -11,6 +11,8 @@ public class ToDoApp extends JFrame {
     private List<String> tarefas;
     private JPanel tarefasPanel;
     private DefaultListModel<String> tarefasListModel;
+    private JTextField txtEditNome;
+    private int tarefaEditIndex;
 
     public ToDoApp() {
         setTitle("Lista de Tarefas");
@@ -36,10 +38,12 @@ public class ToDoApp extends JFrame {
         // Criar os paineis de conteudo
         tarefasPanel = createTarefasPanel();
         JPanel addTarefaPanel = createAddTarefaPanel();
+        JPanel editTarefaPanel = createEditTarefaPanel();
 
         // Adicionar os paineis ao CardLayout
         mainPanel.add(tarefasPanel, "Tarefas");
         mainPanel.add(addTarefaPanel, "Adicionar");
+        mainPanel.add(editTarefaPanel, "Editar");
 
         // Adicionar componentes à janela principal
         add(sidePanel, BorderLayout.WEST);
@@ -76,7 +80,21 @@ public class ToDoApp extends JFrame {
         panel.setLayout(new BorderLayout());
 
         JList<String> tarefasList = new JList<>(tarefasListModel);
+        tarefasList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         panel.add(new JScrollPane(tarefasList), BorderLayout.CENTER);
+
+        JButton btnEditar = new JButton("Editar Tarefa");
+        btnEditar.setBackground(new Color(255, 165, 0)); // Orange
+        btnEditar.setForeground(Color.WHITE);
+        btnEditar.addActionListener(e -> {
+            int selectedIndex = tarefasList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                tarefaEditIndex = selectedIndex;
+                txtEditNome.setText(tarefas.get(selectedIndex));
+                cardLayout.show(mainPanel, "Editar");
+            }
+        });
+        panel.add(btnEditar, BorderLayout.SOUTH);
 
         return panel;
     }
@@ -113,6 +131,42 @@ public class ToDoApp extends JFrame {
         panel.add(lblNome);
         panel.add(txtNome);
         panel.add(btnSalvar);
+
+        return panel;
+    }
+
+    private JPanel createEditTarefaPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 1, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Adicionar margens
+        
+        JLabel lblEditNome = new JLabel("Editar Nome da Tarefa:");
+        txtEditNome = new JTextField(20);
+        txtEditNome.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtEditNome.setPreferredSize(new Dimension(200, 20));
+        
+        JButton btnAtualizar = new JButton("Atualizar Tarefa");
+        btnAtualizar.setFont(new Font("Arial", Font.BOLD, 14));
+        btnAtualizar.setPreferredSize(new Dimension(50, 15));
+
+        // Estilizar botão com cores RGB
+        btnAtualizar.setBackground(new Color(60, 179, 113)); // MediumSeaGreen
+        btnAtualizar.setForeground(Color.WHITE);
+
+        // Adicionar evento ao botão atualizar
+        btnAtualizar.addActionListener(e -> {
+            String tarefa = txtEditNome.getText();
+            if (!tarefa.isEmpty()) {
+                tarefas.set(tarefaEditIndex, tarefa);
+                tarefasListModel.set(tarefaEditIndex, tarefa);
+                txtEditNome.setText("");
+                cardLayout.show(mainPanel, "Tarefas");
+            }
+        });
+
+        panel.add(lblEditNome);
+        panel.add(txtEditNome);
+        panel.add(btnAtualizar);
 
         return panel;
     }
