@@ -25,3 +25,5 @@ replay_pid*
 
 #Cenas do VS Code
 .vscode/
+/nbproject/private/
+/build/
