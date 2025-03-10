@@ -83,6 +83,9 @@ public class ToDoApp extends JFrame {
         tarefasList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         panel.add(new JScrollPane(tarefasList), BorderLayout.CENTER);
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 10));
+
         JButton btnEditar = new JButton("Editar Tarefa");
         btnEditar.setBackground(new Color(255, 165, 0)); // Orange
         btnEditar.setForeground(Color.WHITE);
@@ -94,7 +97,21 @@ public class ToDoApp extends JFrame {
                 cardLayout.show(mainPanel, "Editar");
             }
         });
-        panel.add(btnEditar, BorderLayout.SOUTH);
+        buttonPanel.add(btnEditar);
+
+        JButton btnApagar = new JButton("Apagar Tarefa");
+        btnApagar.setBackground(new Color(220, 20, 60)); // Crimson
+        btnApagar.setForeground(Color.WHITE);
+        btnApagar.addActionListener(e -> {
+            int selectedIndex = tarefasList.getSelectedIndex();
+            if (selectedIndex != -1) {
+                tarefas.remove(selectedIndex);
+                tarefasListModel.remove(selectedIndex);
+            }
+        });
+        buttonPanel.add(btnApagar);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         return panel;
     }
